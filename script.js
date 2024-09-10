@@ -3,15 +3,7 @@ let minValue = Infinity, maxValue = 0, sum = 0, count = 0;
 const measurementInterval = 1000; // Interval in milliseconds (1 second)
 const smoothingFactor = 0.9; // Smoothing factor for the moving average
 let smoothedDB = 0; // Initialize smoothedDB
-let peakValue = 0; // Add this at the top with other variables
-function processAudio() {
-    // ... existing code ...
-    
-    if (dB > peakValue) peakValue = dB;
-    document.getElementById('peakValue').innerText = peakValue.toFixed(1);
-    
-    // ... existing code ...
-}
+let watchId;
 document.getElementById('startButton').addEventListener('click', requestMicAccess);
 document.getElementById('resetButton').addEventListener('click', resetMeasurements);
 
@@ -167,3 +159,150 @@ function updateDateTime() {
 
 // Update date and time every second
 setInterval(updateDateTime, 1000);
+// Detect mobile devices and show the note if needed
+function checkMobile() {
+    if (window.innerWidth <= 768) { // Adjust the width based on your design
+        document.getElementById('noteBanner').style.display = 'block';
+    }
+}
+
+// Call the function on page load and on resize
+window.addEventListener('load', checkMobile);
+window.addEventListener('resize', checkMobile);
+// Function to show or hide the note based on viewport width
+function checkViewport() {
+    const noteBanner = document.getElementById('noteBanner');
+    if (window.innerWidth <= 768) { // Width threshold for mobile view
+        noteBanner.style.display = 'block';
+    } else {
+        noteBanner.style.display = 'none';
+    }
+}
+
+// Call the function on page load and resize
+window.addEventListener('load', checkViewport);
+window.addEventListener('resize', checkViewport);
+function checkMediaSupport() {
+    const noteBox = document.getElementById('noteBox');
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        noteBox.style.display = 'block';
+    } else {
+        noteBox.style.display = 'none';
+    }
+}
+
+// Call this function on page load
+window.onload = function() {
+    checkMediaSupport();
+};
+// Function to start speedometer
+function startSpeedometer() {
+    if (navigator.geolocation) {
+        // Request GPS permission
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                // Permission granted, start watching the position
+                watchId = navigator.geolocation.watchPosition(
+                    function (position) {
+                        const speed = position.coords.speed; // Speed in meters per second (m/s)
+
+                        // Convert speed to km/h and display it
+                        const speedKmph = (speed * 3.6).toFixed(1); // 1 m/s = 3.6 km/h
+                        document.getElementById('speedValue').innerText = isNaN(speedKmph) ? '--' : speedKmph;
+                    },
+                    function (error) {
+                        handleGeolocationError(error);
+                    },
+                    { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+                );
+            },
+            function (error) {
+                handleGeolocationError(error);
+            },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    } else {
+        showNote("Geolocation is not supported by this browser.");
+    }
+}
+
+// Function to stop speedometer
+function stopSpeedometer() {
+    if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+    }
+}
+
+// Error handling for geolocation
+function handleGeolocationError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            showNote("Location access denied by user. Please allow GPS access in your browser settings.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            showNote("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            showNote("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            showNote("An unknown error occurred while trying to access location.");
+            break;
+    }
+}
+
+// Function to show the note to user
+function showNote(message) {
+    const noteBox = document.getElementById('noteBox');
+    noteBox.innerText = message;
+    noteBox.style.display = 'block'; // Show the note box
+}
+
+// Function to hide the note when not needed
+function hideNote() {
+    const noteBox = document.getElementById('noteBox');
+    noteBox.style.display = 'none'; // Hide the note box
+}
+
+// Start speedometer when the start button is clicked
+document.getElementById('startButton').addEventListener('click', startSpeedometer);
+
+// Hide the note by default
+hideNote();
+// Function to update the speedometer
+function updateSpeedometer(speed) {
+    const speedKmph = (speed * 3.6).toFixed(1); // Convert speed to km/h
+    const speedCircle = document.getElementById('speedCircle');
+    const speedValue = document.getElementById('speedValue');
+
+    // Set speed value display
+    speedValue.innerText = isNaN(speedKmph) ? '--' : speedKmph;
+
+    // Calculate the stroke-dashoffset for the speed circle
+    const maxSpeed = 180; // Maximum speed in km/h for the meter
+    const offset = 283 - (speedKmph / maxSpeed) * 283; // Calculate the offset
+
+    // Set the stroke-dashoffset to animate the circle
+    speedCircle.style.strokeDashoffset = offset;
+}
+
+// Start speedometer when the start button is clicked
+document.getElementById('startButton').addEventListener('click', startSpeedometer);
+
+// Function to start the speedometer
+function startSpeedometer() {
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+            function (position) {
+                const speed = position.coords.speed; // Speed in m/s
+                updateSpeedometer(speed);
+            },
+            function (error) {
+                handleGeolocationError(error);
+            },
+            { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+        );
+    } else {
+        showNote("Geolocation is not supported by this browser.");
+    }
+}
