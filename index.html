@@ -13,11 +13,20 @@
         
         <!-- 3D Reset Button -->
         <button id="resetButton" class="reset-button">Reset</button>
-        
-        <!-- Circular Gauge -->
-        <div class="gauge">
-            <canvas id="gaugeCanvas"></canvas>
-        </div>
+        <!-- Export Button -->
+<button id="exportButton" class="start-button">Export Data</button>
+<!-- Export JSON Button -->
+<button id="exportJSONButton" class="start-button">Export Data (JSON)</button>
+<!-- Date and Time Display -->
+<div class="date-time">
+    <p>Current Date and Time: <span id="dateTime">--</span></p>
+</div>
+
+      <!-- Circular Gauge -->
+<div class="gauge">
+    <canvas id="gaugeCanvas"></canvas>
+</div>
+
         
         <!-- Noise Level Display -->
         <div class="noise-values">
@@ -25,9 +34,11 @@
             <p>Average: <span id="avgValue">--</span> dB</p>
             <p>Max: <span id="maxValue">--</span> dB</p>
             <p>Real Time: <span id="currentValue">--</span> dB</p>
+            <p>Peak: <span id="peakValue">--</span> dB</p>
         </div>
     </div>
     
     <script src="script.js"></script>
 </body>
 </html>
+
