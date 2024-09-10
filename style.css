@@ -23,6 +23,110 @@ body {
     height: auto;
     box-sizing: border-box;
 }
+/* Note Banner Styling */
+.note-banner {
+    background-color: #10efbe; /* Bright yellow for visibility */
+    color: #000000; /* Black text for contrast */
+    padding: 12px;
+    text-align: center;
+    font-size: 1em; /* Adjust font size for readability */
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box; /* Ensure padding is included in width */
+    z-index: 1000;
+    border-bottom: 2px solid #000000; /* Distinct border for separation */
+    display: none; /* Default to hidden; shown only on mobile */
+}
+
+.note-banner p {
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .note-banner {
+        font-size: 1.2em; /* Larger text on smaller screens */
+        padding: 15px; /* Increased padding for better touch targets */
+    }
+}
+/* Speedometer Needle Styling */
+.speed-needle {
+    position: absolute;
+    width: 2px;
+    height: 50%;
+    background-color: #ff3333;
+    transform-origin: bottom center;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 6px rgba(255, 51, 51, 0.5);
+}
+
+/* Animating the Speed Circle Shadow */
+@keyframes pulseShadow {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 170, 255, 0.6), 0 0 20px rgba(0, 170, 255, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(0, 170, 255, 0.9), 0 0 30px rgba(0, 170, 255, 0.6);
+    }
+    100% {
+        box-shadow: 0 0 10px rgba(0, 170, 255, 0.6), 0 0 20px rgba(0, 170, 255, 0.4);
+    }
+}
+
+/* Apply animation to Speed Foreground */
+.speed-foreground {
+    animation: pulseShadow 1.5s infinite;
+}
+
+/* Styling for speedometer title */
+.speedometer-title {
+    position: absolute;
+    top: 5%;
+    font-size: 1em;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Note Box Styling */
+.note-box {
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    font-size: 0.8em;
+    color: #333;
+    display: none; /* Hidden by default, shown only when needed */
+}
+
+/* Adjust the layout for mobile devices */
+@media screen and (max-width: 480px) {
+    .speedometer {
+        width: 150px;
+        height: 150px;
+    }
+
+    .speed-value {
+        font-size: 1.5em;
+    }
+
+    .speed-unit {
+        font-size: 0.7em;
+    }
+
+    .note-box {
+        font-size: 0.7em;
+        padding: 8px;
+    }
+}
 
 /* 3D Start and Reset Buttons */
 .start-button, .reset-button {
@@ -48,6 +152,17 @@ body {
 
 .reset-button {
     background: linear-gradient(145deg, #a01e1e, #36aca2);
+}
+/* Speedometer Styling */
+.speedometer {
+    background-color: #222;
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    font-size: 1.5em;
+    display: inline-block;
 }
 
 /* Circular Gauge Styling */
