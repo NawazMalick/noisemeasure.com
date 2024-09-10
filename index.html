@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noise Level Meter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 3D Start Button -->
+        <button id="startButton" class="start-button">Start Measuring</button>
+        
+        <!-- 3D Reset Button -->
+        <button id="resetButton" class="reset-button">Reset</button>
+        
+        <!-- Circular Gauge -->
+        <div class="gauge">
+            <canvas id="gaugeCanvas"></canvas>
+        </div>
+        
+        <!-- Noise Level Display -->
+        <div class="noise-values">
+            <p>Min: <span id="minValue">--</span> dB</p>
+            <p>Average: <span id="avgValue">--</span> dB</p>
+            <p>Max: <span id="maxValue">--</span> dB</p>
+            <p>Real Time: <span id="currentValue">--</span> dB</p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

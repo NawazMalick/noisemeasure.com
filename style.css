@@ -1,0 +1,95 @@
+/* General Styling */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #cb9216, #88ca24);
+    font-family: 'Arial', sans-serif;
+    color: #ffffff;
+    overflow: hidden;
+}
+
+/* Container Styling */
+.container {
+    text-align: center;
+    background: rgba(75, 132, 91, 0.7);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px; /* Limits the max width for larger screens */
+    height: auto;
+    box-sizing: border-box;
+}
+
+/* 3D Start and Reset Buttons */
+.start-button, .reset-button {
+    background: linear-gradient(145deg, #e41dbd, #3083d5);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.start-button:active, .reset-button:active {
+    transform: translateY(4px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+.reset-button {
+    background: linear-gradient(145deg, #a01e1e, #36aca2);
+}
+
+/* Circular Gauge Styling */
+.gauge {
+    margin: 20px auto;
+    position: relative;
+}
+
+#gaugeCanvas {
+    width: 100%;
+    max-width: 300px; /* Limits the max width */
+    height: auto;
+}
+
+.noise-values {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(54, 40, 40, 0.8);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(36, 125, 64, 0.438);
+    margin-top: 20px;
+}
+
+.noise-values p {
+    margin: 5px 0;
+    font-size: 1.2em;
+    background: linear-gradient(145deg, #921818, #444);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .start-button, .reset-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .noise-values p {
+        font-size: 1em;
+    }
+}
