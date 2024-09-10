@@ -52,14 +52,15 @@ body {
 
 /* Circular Gauge Styling */
 .gauge {
-    margin: 20px auto;
-    position: relative;
+    margin: 20px;
+    position: relative; /* Ensure it is centered properly */
 }
 
 #gaugeCanvas {
     width: 100%;
-    max-width: 300px; /* Limits the max width */
-    height: auto;
+    height: auto; /* Ensure it scales properly */
+    max-width: 300px; /* Maximum width */
+    max-height: 300px; /* Maximum height */
 }
 
 .noise-values {
@@ -92,4 +93,8 @@ body {
     .noise-values p {
         font-size: 1em;
     }
+}
+.date-time {
+    margin: 20px 0;
+    font-size: 1.2em;
 }
