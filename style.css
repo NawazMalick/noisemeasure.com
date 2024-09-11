@@ -44,14 +44,26 @@ body {
 .note-banner p {
     margin: 0;
 }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .note-banner {
-        font-size: 1.2em; /* Larger text on smaller screens */
-        padding: 15px; /* Increased padding for better touch targets */
+/* For screens smaller than 600px */
+@media (max-width: 600px) {
+    .container {
+        width: 100%; /* Full width on mobile */
+        max-width: none; /* Remove max-width */
+    }
+    .start-button, .reset-button {
+        font-size: 12px; /* Adjust button size */
+        padding: 8px 12px; /* Smaller padding */
+    }
+    .speed-value {
+        font-size: 1.2em; /* Reduce font size of speedometer value */
+    }
+    .gauge {
+        margin: 10px;
+        max-width: 250px;
+        max-height: 250px; /* Scale down gauge */
     }
 }
+
 /* Speedometer Needle Styling */
 .speed-needle {
     position: absolute;
@@ -153,6 +165,7 @@ body {
 .reset-button {
     background: linear-gradient(145deg, #a01e1e, #36aca2);
 }
+
 /* Speedometer Styling */
 .speedometer {
     background-color: #222;
