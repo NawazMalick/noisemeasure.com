@@ -4,8 +4,32 @@ const measurementInterval = 1000; // Interval in milliseconds (1 second)
 const smoothingFactor = 0.9; // Smoothing factor for the moving average
 let smoothedDB = 0; // Initialize smoothedDB
 let watchId;
-document.getElementById('startButton').addEventListener('click', requestMicAccess);
+document.getElementById('startButton').addEventListener('click', () => {
+    // First, request microphone access and start speedometer
+    requestMicAccess();
+    startSpeedometer();
+});
+
 document.getElementById('resetButton').addEventListener('click', resetMeasurements);
+document.getElementById('exportButton').addEventListener('click', () => {
+    // Fetch or gather data to be exported
+    const data = getDataToExport(); // Replace with your actual function to get data
+
+    // Ensure data is valid before proceeding
+    if (data && typeof data === 'object') {
+        const jsonString = JSON.stringify(data);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "data.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    } else {
+        console.error("Invalid data format for export");
+    }
+});
 
 async function init() {
     try {
@@ -92,19 +116,18 @@ function drawGauge(dB) {
     ctx.strokeStyle = '#ffcc00'; // Fill color
     ctx.stroke();
 }
-
-
 function requestMicAccess() {
-    navigator.permissions.query({ name: 'microphone' }).then(result => {
-        if (result.state === 'denied') {
-            alert('Microphone access is blocked. Please enable it in your browser settings.');
-        } else {
-            init();
-        }
-    }).catch(error => {
-        alert('An error occurred while checking microphone permissions.');
-        console.error('Permissions error:', error);
-    });
+    if (navigator.permissions) {
+        navigator.permissions.query({ name: 'microphone' }).then(result => {
+            if (result.state === 'denied') {
+                alert('Microphone access is blocked. Please enable it in your browser settings.');
+            } else {
+                init(); // Initialize microphone if allowed
+            }
+        }).catch(error => {
+            alert('An error occurred while checking microphone permissions.');
+        });
+    }
 }
 
 function resetMeasurements() {
@@ -124,14 +147,16 @@ function resetMeasurements() {
     }
 }
 function exportToCSV() {
-    const csvContent = `data:text/csv;charset=utf-8,Min,Avg,Max,Current,Peak\n${minValue.toFixed(1)},${(sum / count).toFixed(1)},${maxValue.toFixed(1)},${document.getElementById('currentValue').innerText},${peakValue.toFixed(1)}`;
+    const csvContent = `data:text/csv;charset=utf-8,Min,Avg,Max,Current\n${minValue.toFixed(1)},${(sum / count).toFixed(1)},${maxValue.toFixed(1)},${document.getElementById('currentValue').innerText}`;
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
     link.setAttribute('download', 'noise_level_data.csv');
     document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
 }
+
 
 document.getElementById('exportButton').addEventListener('click', exportToCSV);
 function exportToJSON() {
@@ -149,13 +174,41 @@ function exportToJSON() {
     document.body.appendChild(link);
     link.click();
 }
+document.getElementById('exportJSONButton').addEventListener('click', () => {
+    const data = {
+        minValue: minValue.toFixed(1),
+        avgValue: (sum / count).toFixed(1),
+        maxValue: maxValue.toFixed(1),
+        currentValue: document.getElementById('currentValue').innerText
+    };
+    
+    const jsonString = JSON.stringify(data);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "noise_data.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
 
-document.getElementById('exportJSONButton').addEventListener('click', exportToJSON);
 function updateDateTime() {
     const now = new Date();
     const dateTimeString = now.toLocaleString(); // Format date and time based on locale
     document.getElementById('dateTime').innerText = dateTimeString;
 }
+const exportData = (data) => {
+    const jsonString = JSON.stringify(data);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "data.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+};
 
 // Update date and time every second
 setInterval(updateDateTime, 1000);
@@ -198,33 +251,21 @@ window.onload = function() {
 // Function to start speedometer
 function startSpeedometer() {
     if (navigator.geolocation) {
-        // Request GPS permission
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                // Permission granted, start watching the position
-                watchId = navigator.geolocation.watchPosition(
-                    function (position) {
-                        const speed = position.coords.speed; // Speed in meters per second (m/s)
-
-                        // Convert speed to km/h and display it
-                        const speedKmph = (speed * 3.6).toFixed(1); // 1 m/s = 3.6 km/h
-                        document.getElementById('speedValue').innerText = isNaN(speedKmph) ? '--' : speedKmph;
-                    },
-                    function (error) {
-                        handleGeolocationError(error);
-                    },
-                    { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
-                );
+        navigator.geolocation.watchPosition(
+            function(position) {
+                const speed = position.coords.speed;
+                updateSpeedometer(speed);
             },
-            function (error) {
-                handleGeolocationError(error);
+            function(error) {
+                handleGeolocationError(error); // Ensure errors are handled properly
             },
             { enableHighAccuracy: true, timeout: 10000 }
         );
     } else {
-        showNote("Geolocation is not supported by this browser.");
+        alert("Geolocation is not supported by your browser.");
     }
 }
+
 
 // Function to stop speedometer
 function stopSpeedometer() {
@@ -305,4 +346,37 @@ function startSpeedometer() {
     } else {
         showNote("Geolocation is not supported by this browser.");
     }
+}
+navigator.permissions.query({ name: 'microphone' }).then(result => {
+    if (result.state === 'denied') {
+        alert('Microphone access is blocked. Please enable it in your browser settings.');
+    } else {
+        init();
+    }
+}).catch(error => {
+    alert('An error occurred while checking microphone permissions.');
+});
+navigator.geolocation.watchPosition(
+    function (position) {
+        const speed = position.coords.speed;
+        updateSpeedometer(speed); // Call function to update the display
+    },
+    function (error) {
+        handleGeolocationError(error);
+    },
+    { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+);
+if (speed == null) {
+    document.getElementById('speedValue').innerText = '--'; // Show dashes for no speed
+} else {
+    updateSpeedometer(speed);
+}
+// Function to toggle the visibility of the converter
+function toggleConverter() {
+  const converterContainer = document.getElementById('converterContainer');
+  if (converterContainer.style.display === 'none') {
+    converterContainer.style.display = 'block';
+  } else {
+    converterContainer.style.display = 'none';
+  }
 }
