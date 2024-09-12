@@ -2,31 +2,88 @@
 body {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
+    align-items: flex-start; /* Start from the top to allow scrolling */
+    min-height: 100vh;
     margin: 0;
     background: linear-gradient(135deg, #cb9216, #88ca24);
     font-family: 'Arial', sans-serif;
     color: #ffffff;
-    overflow: hidden;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Wrapper to center content horizontally and allow scrolling */
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 /* Container Styling */
 .container {
-    text-align: center;
-    background: rgba(75, 132, 91, 0.7);
+    background: rgba(97, 113, 87, 0.7);
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     width: 90%;
-    max-width: 600px; /* Limits the max width for larger screens */
-    height: auto;
+    max-width: 600px;
     box-sizing: border-box;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 3D Button Styling */
+button {
+    background: linear-gradient(145deg, #e41dbd, #3083d5);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+button:active {
+    transform: translateY(4px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Reset Button with different colors */
+.reset-button {
+    background: linear-gradient(145deg, #a01e1e, #36aca2);
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 600px) {
+    button {
+        font-size: 14px;
+        padding: 10px 20px;
+        margin: 8px;
+    }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.container {
+    animation: fadeIn 1s ease-in;
+}
+
+/* Scroll Behavior */
+html {
+    scroll-behavior: smooth; /* Optional smooth scrolling */
 }
 /* Note Banner Styling */
 .note-banner {
-    background-color: #10efbe; /* Bright yellow for visibility */
-    color: #000000; /* Black text for contrast */
+    background-color: #3d3137; /* Bright yellow for visibility */
+    color: #fff9f9; /* Black text for contrast */
     padding: 12px;
     text-align: center;
     font-size: 1em; /* Adjust font size for readability */
@@ -73,7 +130,7 @@ body {
     transform-origin: bottom center;
     transform: rotate(0deg);
     transition: transform 0.3s ease;
-    box-shadow: 0 0 6px rgba(255, 51, 51, 0.5);
+    box-shadow: 0 0 6px rgba(238, 1, 1, 0.5);
 }
 
 /* Animating the Speed Circle Shadow */
@@ -99,7 +156,7 @@ body {
     position: absolute;
     top: 5%;
     font-size: 1em;
-    color: #555;
+    color: #d32121;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -113,7 +170,7 @@ body {
     background: rgba(255, 255, 255, 0.9);
     padding: 10px;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(181, 16, 16, 0.2);
     font-size: 0.8em;
     color: #333;
     display: none; /* Hidden by default, shown only when needed */
@@ -165,17 +222,80 @@ body {
 .reset-button {
     background: linear-gradient(145deg, #a01e1e, #36aca2);
 }
-
 /* Speedometer Styling */
 .speedometer {
-    background-color: #222;
+    position: relative;
+    background-color: #332727;
     color: #fff;
     padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    margin: 10px;
-    font-size: 1.5em;
+    border-radius: 50%; /* Perfect circle */
+    box-shadow: 0 4px 10px rgba(228, 206, 206, 0.722);
+    margin: 10px auto;
     display: inline-block;
+    width: 200px; /* Adjusted for smaller screens */
+    height: 200px; 
+    text-align: center;
+}
+
+/* Speed and Distance Display */
+.speed-value, .distance-value {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
+    left: 0;
+}
+
+/* Speed and km/h combined */
+.speed-value {
+    top: 40%; /* Vertical alignment within the circle */
+    font-size: 1.5em; /* Adjusted size */
+}
+
+/* Distance value below the speed */
+.distance-value {
+    top: 60%; /* Placed below the speed value */
+    font-size: 1.2em;
+}
+
+/* Speed Circle */
+.speed-circle {
+    display: block;
+    margin: auto;
+}
+
+/* Yellow Circle (Gauge) Styling */
+.speed-background {
+    stroke: #aec3aa;
+    stroke-width: 5;
+    fill: none;
+}
+
+.speed-foreground {
+    stroke: #ffcc00; /* Bright yellow color */
+    stroke-width: 5;
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 283; /* Full circumference of the circle */
+    stroke-dashoffset: 283; /* Fully hidden at the start */
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg); /* Start the gauge at the top */
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 600px) {
+    .speedometer {
+        width: 150px;
+        height: 150px;
+    }
+
+    .speed-value {
+        font-size: 1.3em;
+    }
+
+    .distance-value {
+        font-size: 1.1em;
+    }
 }
 
 /* Circular Gauge Styling */
