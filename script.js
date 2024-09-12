@@ -3,6 +3,7 @@ let minValue = Infinity, maxValue = 0, sum = 0, count = 0;
 const measurementInterval = 1000; // Interval in milliseconds (1 second)
 const smoothingFactor = 0.9; // Smoothing factor for the moving average
 let smoothedDB = 0; // Initialize smoothedDB
+let distanceCovered = 0;
 let watchId;
 document.getElementById('startButton').addEventListener('click', () => {
     // First, request microphone access and start speedometer
@@ -379,4 +380,16 @@ function toggleConverter() {
   } else {
     converterContainer.style.display = 'none';
   }
+}
+function updateSpeedometer(speed) {
+    const speedKmph = (speed * 3.6).toFixed(1); // Convert speed to km/h
+    const maxSpeed = 180; // Maximum speed
+
+    // Update speed and distance display
+    document.getElementById('speedValue').innerText = `${speedKmph} km/h`;
+    document.getElementById('distanceValue').innerText = `${distanceCovered.toFixed(2)} km`;
+
+    // Update the yellow circle (gauge)
+    const offset = 283 - (speedKmph / maxSpeed) * 283; // Adjust gauge based on speed
+    document.getElementById('speedCircle').style.strokeDashoffset = offset;
 }
